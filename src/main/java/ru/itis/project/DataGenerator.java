@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class DataGenerator {
     public static void main(String[] args) {
-        generateTestFile("data.txt", 60, 101, 10000);
+        generateTestFile("data.txt", 99, 101, 10000);
     }
 
     public static void generateTestFile(String filename, int arraysCount, int minSize, int maxSize) {
@@ -30,22 +30,6 @@ public class DataGenerator {
         int[] array = new int[size];
         for (int i = 0; i < size; i++) {
             array[i] = random.nextInt(100000);
-        }
-        return array;
-    }
-
-    private static int[] generateGoodArray(int size, Random random) {
-        int[] array = new int[size];
-        for (int i = 0; i < size; i++) {
-            array[i] = i;
-        }
-        return array;
-    }
-
-    private static int[] generateBadArray(int size, Random random) {
-        int[] array = new int[size];
-        for (int i = 0; i < size; i++) {
-            array[i] = size - i;
         }
         return array;
     }
