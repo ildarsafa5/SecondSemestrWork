@@ -8,8 +8,10 @@ public class SplayTree {
     public SplayTree(int elem) {this.root = new Node(elem);}
 
     public void insert(int elem) {
-        if (privateSearch(elem).getValue() == new Node(elem).getValue()) {
-            return;
+        if (searchWithOutSplay(elem) != null) {
+            if (searchWithOutSplay(elem).getValue() == new Node(elem).getValue()) {
+                return;
+            }
         }
         if (root == null) {
             root = new Node(elem);
@@ -41,7 +43,7 @@ public class SplayTree {
     }
 
     public boolean search(int elem) {
-        Node current = privateSearch(elem);
+        Node current = searchWithOutSplay(elem);
         if (current!=null) {
             splay(current);
             if (current.getValue()!=elem) {
@@ -53,7 +55,7 @@ public class SplayTree {
         return true;
     }
 
-    private Node privateSearch(int elem) {
+    public Node searchWithOutSplay(int elem) {
         if (root == null) {
             return null;
         }
@@ -79,7 +81,7 @@ public class SplayTree {
     }
 
     public boolean delete(int elem) {
-        Node current = privateSearch(elem);
+        Node current = searchWithOutSplay(elem);
         if (current == null || current.getValue() != elem) {
             return false;
         }
