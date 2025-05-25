@@ -6,17 +6,20 @@ public class SplayTree {
     public SplayTree() {}
 
     public SplayTree(int elem) {this.root = new Node(elem);}
-
+    // добавление элемента в дерево
     public void insert(int elem) {
+        // если элемент уже есть - не добавляем
         if (searchWithOutSplay(elem) != null) {
             if (searchWithOutSplay(elem).getValue() == new Node(elem).getValue()) {
                 return;
             }
         }
+        // если в дереве ещё нет элементов
         if (root == null) {
             root = new Node(elem);
             return;
         }
+        // вставка элемента в место, определяемое логикой дерева
         Node current  = root;
         while (true) {
             if (elem>current.getValue()) {
@@ -39,12 +42,14 @@ public class SplayTree {
                 }
             }
         }
+        // поднятие элемента вверх после операции добавления
         splay(current);
     }
-
+    // поиск элемента в дереве
     public boolean search(int elem) {
         Node current = searchWithOutSplay(elem);
         if (current!=null) {
+            // splay найденного или того, до которого дошёл поиск, если дерево непустое
             splay(current);
             if (current.getValue()!=elem) {
                 return false;
@@ -54,23 +59,27 @@ public class SplayTree {
         }
         return true;
     }
-
+    // поиск без splay операции
     public Node searchWithOutSplay(int elem) {
+        // возвращаем null, если дерево пустое
         if (root == null) {
             return null;
         }
         Node current = root;
         while(true) {
+            // если элемент найден возвращаем его узел
             if (current.getValue()==elem) {
                 return current;
             }
             if (elem>current.getValue()) {
+                // если элемент не найден - возвращаем тот элемент, до которого дошёл поиск
                 if (current.getRight() == null) {
                     return current;
                 } else {
                     current = current.getRight();
                 }
             } else {
+                // если элемент не найден - возвращаем тот элемент, до которого дошёл поиск
                 if (current.getLeft() == null) {
                     return current;
                 } else {
@@ -79,17 +88,21 @@ public class SplayTree {
             }
         }
     }
-
+    // удаление элемента
     public boolean delete(int elem) {
+        // выход, если элемент не найден
         Node current = searchWithOutSplay(elem);
         if (current == null || current.getValue() != elem) {
             return false;
         }
+        // поднятие элемента в корень дерева
         splay(current);
+        // разделение дерева на два дерева и дальнейшее их слияние
         if (current.getRight() == null && current.getLeft()!=null) {
             current.getLeft().setParent(null);
             Node left = current.getLeft();
             root = left;
+            // поднятие максимального элемента в левом дереве в корень
             Node max = max(left);
             splay(max);
             root = max;
@@ -105,6 +118,7 @@ public class SplayTree {
             Node left = current.getLeft();
             root = left;
             Node right = current.getRight();
+            // поднятие максимального элемента в левом дереве в корень
             Node max = max(left);
             splay(max);
             max.setRight(right);
@@ -113,7 +127,7 @@ public class SplayTree {
         }
         return true;
     }
-
+    // поиск максимального элемента в дереве
     private Node max(Node node) {
         Node current = node;
         while(current.getRight()!=null) {
@@ -121,47 +135,52 @@ public class SplayTree {
         }
         return current;
     }
-
+    // операция поднятие элемента в корень с помощью поворотов
     public void splay(Node node) {
+        // если элемент уже является корнем - выходим
         if (root.getValue() == node.getValue()) {
             return;
         }
         while(node.getParent().getParent()!=null) {
             if (node.getParent().getLeft() == node) {
+                // операция Zig-Zig
                 if (node.getParent().getParent().getLeft() == node.getParent()) {
                     zig(node.getParent());
                     zig(node);
+                // операция Zig-Zag
                 } else {
                     zig(node);
                     zag(node);
                 }
             } else {
+                // операция Zag-Zag
                 if (node.getParent().getParent().getRight() == node.getParent()) {
                     zag(node.getParent());
                     zag(node);
+                // операция Zag-Zig
                 } else {
                     zag(node);
                     zig(node);
                 }
             }
+            // если элемент уже стал корнем, закрывающая операция Zig/Zag уже не нужны
             if (node.getParent() == null) {
                 root = node;
                 return;
             }
         }
+        // операция Zag
         if (node.getParent().getRight() == node) {
             zag(node);
             root = node;
+        // операция Zig
         } else {
             zig(node);
             root = node;
         }
     }
 
-    public Node getRoot() {
-        return root;
-    }
-
+    // операция правого поворота
     private void zig(Node x) {
         Node t2 = x.getRight();
         Node y = x.getParent();
@@ -189,7 +208,7 @@ public class SplayTree {
             }
         }
     }
-
+    // операция левого поворота
     private void zag(Node y) {
         Node t2 = y.getLeft();
         Node x = y.getParent();
